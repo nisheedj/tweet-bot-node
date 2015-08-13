@@ -1,0 +1,29 @@
+{
+  "name": "tweet-bot-node",
+  "version": "1.0.0",
+  "description": "Twitter Bot using node js , RPi , Arduino, Jonny Five",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nisheedj/tweet-bot-node.git"
+  },
+  "keywords": [
+    "twitter",
+    "nodejs",
+    "arduino",
+    "raspberrypi",
+    "jonny-five"
+  ],
+  "author": "Nisheed Jagadish",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nisheedj/tweet-bot-node/issues"
+  },
+  "homepage": "https://github.com/nisheedj/tweet-bot-node#readme",
+  "dependencies": {
+    "twitter": "^1.2.5"
+  }
+}
