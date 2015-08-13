@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/nisheedj/tweet-bot-node#readme",
   "dependencies": {
-    "twitter": "^1.2.5"
+    "colors": "^1.1.2",
+    "johnny-five": "^0.8.86",
+    "twit": "^2.1.0"
   }
 }
