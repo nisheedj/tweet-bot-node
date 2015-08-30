@@ -1,8 +1,14 @@
 var Twit = require('twit');
-var twitterConfig = require('./twitter-config.json');
 var five = require("johnny-five");
 var board, lcd;
 
+/*Check if the json file exists*/
+try {
+	var twitterConfig = require('./twitter-config.json');
+} catch (exception) {
+	console.error('"twitter-config.json" missing!');
+	process.exit(1);
+}
 
 /**
  * Extract the first hashtag in the tweet converted to lowercase
