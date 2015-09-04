@@ -1,5 +1,5 @@
-var twitter = require('./app/twitter');
-var utils = require('./app/utils');
+var twitter = require('./bot/twitter');
+var utils = require('./bot/utils');
 var _ = require('underscore');
 var five = require("johnny-five");
 var board, lcd, m1, m2, twit;

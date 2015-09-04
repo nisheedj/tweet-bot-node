@@ -12,7 +12,7 @@ In order to make use of the RPi with node there are a couple of steps to be foll
 4. Download and install [WinSCP](http://winscp.net) and [Putty](http://www.putty.org/) on your windows/mac machine to remote login to your RPi.
 5. Use [WinSCP](http://winscp.net/eng/index.php) by creating a new site and use the IP of the connected RPi and credentials i.e. username: pi & password: raspberry to transfer you project folder to  a location on the RPi.
 6. Now open a [Putty](http://www.putty.org/) session with your RPi by providing the appropriate credentials i.e. username: pi & password: raspberry.
-7. Once the session is open, go the transfered folder path and run `sudo npm install --unsafe-perm`.
+7. Once the session is open, go the transfered folder path and run `sudo npm install --production --unsafe-perm`.
 8. Once intallation of the required modules is done run the application by usig `sudo node app.js`.
 
 ## Config file `twitter-config.json`
