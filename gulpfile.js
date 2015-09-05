@@ -8,9 +8,12 @@ var del = require('del'),
   jshint = require('gulp-jshint'),
   jshintJsx = require('jshint-jsx'),
   jshintStylish = require('jshint-stylish'),
+  less = require('gulp-less'),
+  minifyCss = require('gulp-minify-css'),
   rename = require('gulp-rename');
 
 var assetsPath = path.join('public');
+var stylesPath = path.join('less', 'app.less');
 var scriptPath = path.join('app', '**', '*.js');
 
 console.log(path.join('app', 'app.js'));
@@ -38,12 +41,23 @@ gulp
   })
   .task('build-js', ['jshint'], function() {
     return browserify(['./app/app.js'])
+      .exclude('jquery')
       .transform(babelify)
       .bundle()
       .pipe(source('app.js'))
       .pipe(gulp.dest(path.join(assetsPath, 'js')));
   })
+  .task('build-css', ['clean'], function() {
+    return gulp.src([stylesPath])
+      .pipe(less())
+      .pipe(gulp.dest(path.join(assetsPath, 'css')))
+      .pipe(rename({
+        suffix: '.min'
+      }))
+      .pipe(minifyCss())
+      .pipe(gulp.dest(path.join(assetsPath, 'css')))
+  })
   .task('watch', function() {
     gulp.watch(scriptPath, ['minify-js']);
   })
-  .task('default', ['minify-js']);
+  .task('default', ['minify-js', 'build-css']);

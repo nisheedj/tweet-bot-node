@@ -52,7 +52,7 @@ var Login = React.createClass({
     });
 
     return (
-      <div className="col-sm-12 col-md-6 col-md-offset-3" style={{marginTop:70}}>
+      <div className="col-sm-12 col-md-6 col-md-offset-3 margin-top">
         <h2>Login</h2>
         <hr/>
         <LoginForm ref={'loginForm'} isFormDisabled={this.state.disableForm} submitCb={this.loginUser}/>

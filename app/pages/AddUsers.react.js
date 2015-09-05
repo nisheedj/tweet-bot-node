@@ -28,7 +28,7 @@ var AddUsers = React.createClass({
   },
   render: function() {
     return (
-       <div className="col-sm-12 col-md-6 col-md-offset-3" style={{marginTop:70}}>
+       <div className="col-sm-12 col-md-6 col-md-offset-3 margin-top">
           <h2>Add Users</h2>
           <hr/>
           <AddUserForm ref={'addUsersForm'} submitCb={this.addUsers}/>

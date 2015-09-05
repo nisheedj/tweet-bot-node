@@ -7,6 +7,7 @@ var server = http.Server(app);
 
 /*Set static resources*/
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
+app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img')));
 
 /*Base index file*/
