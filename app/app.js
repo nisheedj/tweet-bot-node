@@ -7,10 +7,19 @@ var Firebase = require('firebase');
 
 var Navbar = require('./components/Navbar.react');
 
+var Socket = require('socket.io-client')('http://localhost:9000');
+
 var AppStore = require('./stores/AppStore');
+
 AppStore.firebase = new Firebase('https://twitter-bot-login.firebaseio.com');
+AppStore.io = Socket;
 
 var App = React.createClass({
+  componentDidMount: function() {
+    AppStore.io.on('connect', function(socket) {
+      console.info('Socket Connected !!');
+    });
+  },
   render () {
     return (
       <div className="container-fluid">
