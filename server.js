@@ -1,12 +1,20 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
-
 var app = express();
 var server = http.Server(app);
 var io = require('socket.io')(server);
+var twitter = require('./bot/twitter');
+var utils = require('./bot/utils');
+var _ = require('underscore');
+var five = require('johnny-five');
 
-var botRoom = 'C0mplexPwd';
+var notifyQueue = require('notify-queue');
+var q, botRoom, board, calibrateMode, lcd, mA, mB, twit, fwdTimeout, revTimeout, leftTimeout, rightTimeout;
+
+botRoom = 'C0mplexPwd';
+calibrateMode = false;
+q = new notifyQueue();
 
 /*Set static resources*/
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
@@ -24,17 +32,62 @@ var hasZeroClientsInRoom = function() {
   return typeof io.nsps['/'].adapter.rooms[botRoom] === 'undefined';
 };
 
+q.pop(function(item, next) {
+
+  switch (item.control.control) {
+    case 'forward':
+      mA.fwd(100);
+      mB.fwd(100);
+      setTimeout(function() {
+        console.log('Forward done');
+        mA.stop();
+        mB.stop();
+        next();
+      }, 1500);
+      break;
+    case 'reverse':
+      mA.rev(100);
+      mB.rev(100);
+      setTimeout(function() {
+        mA.stop();
+        mB.stop();
+        next();
+      }, 1500);
+      break;
+    case 'left':
+      mA.rev(100);
+      mB.fwd(100);
+      setTimeout(function() {
+        mA.stop();
+        mB.stop();
+        next();
+      }, 500);
+      break;
+    case 'right':
+      mA.fwd(100);
+      mB.rev(100);
+      setTimeout(function() {
+        mA.stop();
+        mB.stop();
+        next();
+      }, 500);
+      break;
+  }
+
+});
+
 io.on('connection', function(socket) {
   console.log('Client connected!');
 
   socket.on('disconnect', function() {
     console.log('Client disconnected');
+    calibrateMode = false;
   });
 
   socket.on('leave secret room', function(data) {
     io.sockets.in(botRoom).emit('left secret room');
     socket.leave(botRoom);
-    /*Destroy instance of the node bot and stop commands to and fro*/
+    calibrateMode = false;
   });
 
   socket.on('join secret room', function(data) {
@@ -43,8 +96,8 @@ io.on('connection', function(socket) {
       if (hasZeroClientsInRoom()) {
         socket.join(botRoom);
         io.sockets.in(botRoom).emit('joined secret room');
-        //Create new instance of the node bot and send commands to and fro
         console.log(data.config);
+        calibrateMode = true;
       } else {
         socket.emit('admin already connected');
       }
@@ -54,8 +107,35 @@ io.on('connection', function(socket) {
   });
 });
 
-server.listen(9000, function() {
-  var host = server.address().address
-  var port = server.address().port
-  console.log('Example app listening at http://' + host + ':' + port);
+
+board = new five.Board();
+
+board.on('ready', function() {
+
+  mA = new five.Motor([6, 7, 4]);
+  mB = new five.Motor([5, 3, 2]);
+
+  mA.start();
+  mB.start();
+
+  twit = new twitter({
+    onTweet: function(tweet) {
+      if (calibrateMode === false) {
+        var controls = utils.validHashTags(tweet);
+        _.each(controls, function(control) {
+          q.push({
+            user: tweet.user,
+            control: control
+          });
+        });
+      }
+    }
+  });
+
+  server.listen(9000, function() {
+    var host = server.address().address
+    var port = server.address().port
+    console.log('Example app listening at http://' + host + ':' + port);
+  });
+
 });

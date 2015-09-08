@@ -19,7 +19,7 @@ var Firebase = require('firebase');
 
 var Navbar = require('./components/Navbar.react');
 
-var Socket = require('socket.io-client')('http://localhost:9000');
+var Socket = require('socket.io-client')(window.location.origin);
 
 var AppStore = require('./stores/AppStore');
 
