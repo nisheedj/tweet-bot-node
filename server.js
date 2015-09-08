@@ -72,6 +72,11 @@ q.pop(function(item, next) {
         next();
       }, 500);
       break;
+    case 'dummy':
+      setTimeout(function() {
+        next();
+      }, 1000);
+      break;
   }
 
 });
@@ -108,15 +113,14 @@ io.on('connection', function(socket) {
 });
 
 
-board = new five.Board();
+board = new five.Board(/*{
+  port: 'COM4'
+}*/);
 
 board.on('ready', function() {
 
   mA = new five.Motor([6, 7, 4]);
   mB = new five.Motor([5, 3, 2]);
-
-  mA.start();
-  mB.start();
 
   twit = new twitter({
     onTweet: function(tweet) {
@@ -126,6 +130,12 @@ board.on('ready', function() {
           q.push({
             user: tweet.user,
             control: control
+          });
+          q.push({
+            user: tweet.user,
+            control: {
+              control:'dummy'
+            }
           });
         });
       }
