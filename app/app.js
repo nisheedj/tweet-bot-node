@@ -39,7 +39,6 @@ var routes = (
   <Route handler={App}>
     <DefaultRoute name="login" handler={require('./pages/Login.react')}/>
     <Route name="add" handler={require('./pages/AddUsers.react')}/>
-    <Route name="progress" handler={require('./pages/Progress.react')}/>
     <Route name="calibrate" handler={require('./pages/Calibrate.react')}/>
   </Route>
 );

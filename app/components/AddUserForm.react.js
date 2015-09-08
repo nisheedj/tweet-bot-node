@@ -17,16 +17,22 @@ var AddUserForm = React.createClass({
           <label className="sr-only" htmlFor={'user' + (i + 1)}>{'user' + (i + 1)}</label>
           <div className="input-group">
             <div className="input-group-addon">{'User ' + (i + 1)}</div>
-            <input ref={'user' + (i + 1)} type="text" className="form-control" id={'user' + (i + 1)} placeholder="@user"/>
+            <input disabled={this.props.formDisabled} ref={'user' + (i + 1)} type="text" className="form-control" id={'user' + (i + 1)} placeholder="@user" value={this.props.activeUsers[i]} onChange={()=>{}}/>
           </div>    
         </div>
       );
+    }
+    var formBtn;
+    if(this.props.formDisabled){
+      formBtn = <button type="submit" className="btn btn-danger btn-lg">Stop Game</button>;
+    } else {
+      formBtn = <button type="submit" className="btn btn-primary btn-lg">Start Game</button>;
     }
     return (
       <form className="well" onSubmit={this.props.submitCb}>
         {userInputs}
         <div className="form-group text-right">
-          <button type="submit" className="btn btn-primary btn-lg">Add Users</button>
+          {formBtn}
         </div>
       </form>
     );

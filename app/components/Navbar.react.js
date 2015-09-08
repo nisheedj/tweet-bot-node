@@ -30,6 +30,7 @@ var Navbar = React.createClass({
   logoutUser:function(e){
     e.preventDefault();
     AppActions.logOut();
+    AppStore.io.emit('logout');
   },
   render: function() {
     
@@ -58,8 +59,8 @@ var Navbar = React.createClass({
               <li className={classNames({'active':this.isActive('add')})}>
                 <Link to="add">Add users</Link>
               </li>
-              <li className={classNames({'active':this.isActive('progress')})}>
-                <Link to="progress">Progress</Link>
+              <li className={classNames({'active':this.isActive('calibrate')})}>
+                <Link to="calibrate">Calibrate</Link>
               </li>
             </ul>
 

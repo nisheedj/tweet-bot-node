@@ -7,31 +7,73 @@ var LoginRedirect = require('../mixins/LoginRedirect');
 
 var AddUsers = React.createClass({
   mixins: [LoginRedirect, Navigation],
-  addUsers:function(e){
+  getInitialState: function() {
+    return {
+      formDisabled: false,
+      activeUsers: []
+    };
+  },
+  startGame:function(data){
+    AppStore.io.emit('start game', data);
+    this.setState({
+      formDisabled: true
+    });
+  },
+  stopGame: function() {
+    AppStore.io.emit('stop game');
+    this.setState({
+      formDisabled: false
+    });
+  },
+  addUsers: function(e) {
     e.preventDefault();
     e.stopPropagation();
-    var userInputRefs = this.refs.addUsersForm.refs;
-    var userNames = [];
-    
-    _.each(userInputRefs,function(userInputRef){
-      if(userInputRef.getDOMNode().value){
-        var userName = userInputRef.getDOMNode().value.replace(/\W?/g,'');
-        userNames.push(userName);
+
+    if (this.state.formDisabled === false) {
+
+      var userInputRefs = this.refs.addUsersForm.refs;
+      var userNames = [];
+
+      _.each(userInputRefs, function(userInputRef) {
+        if (userInputRef.getDOMNode().value) {
+          var userName = userInputRef.getDOMNode().value.replace(/\W?/g, '');
+          userNames.push(userName);
+        }
+      });
+
+      if (userNames.length) {
+        //Send data to the backend
+        this.startGame(userNames);
       }
-    });
-
-    if(userNames.length){
-      //Send data to the backend
-      this.transitionTo('progress');
+    } else {
+      this.stopGame();
     }
-
+  },
+  activeGameUsersCb: function(data) {
+    if (data.length) {
+      if (this.isMounted()) {
+        this.setState({
+          formDisabled: true,
+          activeUsers: data
+        });
+      }
+    }
+  },
+  componentWillMount: function() {
+    AppStore.io.on('active game users', this.activeGameUsersCb);
+  },
+  componentDidMount: function() {
+    AppStore.io.emit('get active game users');
+  },
+  componentWillUnmount: function() {
+    AppStore.io.removeListener('active game users', this.activeGameUsersCb);
   },
   render: function() {
     return (
        <div className="col-sm-12 col-md-6 col-md-offset-3 margin-top">
           <h2>Add Users</h2>
           <hr/>
-          <AddUserForm ref={'addUsersForm'} submitCb={this.addUsers}/>
+          <AddUserForm ref={'addUsersForm'} submitCb={this.addUsers} {...this.state}/>
        </div>
     );
   }

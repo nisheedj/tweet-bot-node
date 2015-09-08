@@ -7,6 +7,16 @@ var AppActions = require('../actions/AppActions');
 
 var Login = React.createClass({
   mixins:[Navigation],
+  statics: {
+    willTransitionTo: function(transition, params, query, callback) {
+      if (AppStore.isLoggedIn()) {
+        transition.redirect('add');
+        callback();
+      } else {
+        callback();
+      }
+    }
+  },
   getInitialState: function() {
     return {
       disableForm: false,

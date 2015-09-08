@@ -19,7 +19,7 @@ var Calibrate = React.createClass({
         callback();
       } else {
         /*Get data from firebase*/
-        firebaseRef.on("value", function(snapshot) {
+        firebaseRef.once("value", function(snapshot) {
           AppStore.motorConfig = snapshot.val();
           callback();
         }, function(errorObject) {
@@ -70,71 +70,89 @@ var Calibrate = React.createClass({
       config: currentConfig
     });
   },
+  disconnectCb:function(){
+
+    console.info('Client disconnected !!');
+
+    if (this.isMounted()) {
+      this.setState({
+        toggleConnect: false
+      });
+    }
+  },
+  joinedSecretRoomCb:function(data){
+
+    console.info('Joined bot room !!');
+
+    if (this.isMounted()) {
+      this.setState({
+        toggleConnect: true
+      });
+    }
+  },
+  leftSecretRoomCb:function(){
+
+    console.info('Left bot room !!');
+
+    if (this.isMounted()) {
+      this.setState({
+        toggleConnect: false
+      });
+    }
+  },
+  errorSecretRoomCb:function(){
+
+    console.error('Error joining bot room !!');
+
+    if (this.isMounted()) {
+      this.setState({
+        toggleConnect: false
+      });
+    }
+  },
+  adminConnectedCb:function(){
+
+    console.error('Admin already connected to bot room !!');
+
+    if (this.isMounted()) {
+      this.setState({
+        toggleConnect: false
+      });
+    }
+  },
+  componentWillUnmount:function(){
+    AppStore.io.emit('leave secret room');
+    AppStore.io.removeListener('disconnect', this.disconnectCb);
+    AppStore.io.removeListener('joined secret room',this.joinedSecretRoomCb);
+    AppStore.io.removeListener('left secret room', this.leftSecretRoomCb);
+    AppStore.io.removeListener('error joining room', this.errorSecretRoomCb);
+    AppStore.io.removeListener('admin already connected',this.adminConnectedCb);
+  },
   componentDidMount: function() {
-    var self = this;
-
-    AppStore.io.on('disconnect',function(){
-      console.info('Client disconnected !!');
-      if(self.isMounted()){ 
-        self.setState({
-          toggleConnect: false
-        });
-      }
-    });
-
-    AppStore.io.on('joined secret room', function(data) {
-      console.info('Joined bot room !!');
-      if (self.isMounted()) {
-        self.setState({
-          toggleConnect: true
-        });
-      }
-    });
-
-    AppStore.io.on('left secret room', function() {
-      console.info('Left bot room !!');
-      if (self.isMounted()) {
-        self.setState({
-          toggleConnect: false
-        });
-      }
-    });
-
-    AppStore.io.on('error joining room', function(data) {
-      console.error('Error joining bot room !!');
-      if (self.isMounted()) {
-        self.setState({
-          toggleConnect: false
-        });
-      }
-    });
-
-    AppStore.io.on('admin already connected', function() {
-      console.error('Admin already connected to bot room !!');
-      if (self.isMounted()) {
-        self.setState({
-          toggleConnect: false
-        });
-      }
-    });
-
+    AppStore.io.on('disconnect', this.disconnectCb);
+    AppStore.io.on('joined secret room',this.joinedSecretRoomCb);
+    AppStore.io.on('left secret room', this.leftSecretRoomCb);
+    AppStore.io.on('error joining room', this.errorSecretRoomCb);
+    AppStore.io.on('admin already connected',this.adminConnectedCb);
   },
-  directionControl:function(action){
-    AppStore.io.emit('move twitter bot',action);
+  directionControl: function(action) {
+    AppStore.io.emit('move direction', {
+      direction: action
+    });
   },
-  forwardDirectionCtrl:function(e){
+  forwardDirectionCtrl: function(e) {
     this.directionControl('forward');
   },
-  reverseDirectionCtrl:function(e){
+  reverseDirectionCtrl: function(e) {
     this.directionControl('reverse');
   },
-  rightDirectionCtrl:function(e){
+  rightDirectionCtrl: function(e) {
     this.directionControl('right');
   },
-  leftDirectionCtrl:function(e){
+  leftDirectionCtrl: function(e) {
     this.directionControl('left');
   },
-  stopDirectionCtrl:function(e){
+  stopDirectionCtrl: function(e) {
     this.directionControl('stop');
   },
   render: function() {

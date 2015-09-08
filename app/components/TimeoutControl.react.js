@@ -8,9 +8,9 @@ var TimeoutControl = React.createClass({
       id: '',
       sliderOptions: {
         min: 100,
-        max: 1000,
-        ticks: [100, 1000],
-        ticks_labels: ['100ms', '1s'],
+        max: 3000,
+        ticks: [100, 3000],
+        ticks_labels: ['100ms', '3s'],
       },
       isDisabled: false,
       value:100

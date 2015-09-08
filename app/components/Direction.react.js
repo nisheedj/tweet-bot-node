@@ -19,31 +19,31 @@ var Direction = React.createClass({
           <tbody>
             <tr>
               <td colSpan="3" className="text-center">
-                <button className="btn btn-lg btn-primary" onMouseDown={this.props.fwd}>
+                <button className="btn btn-lg btn-primary" onClick={this.props.fwd}>
                   <span className="glyphicon glyphicon-arrow-up"></span>
                 </button>
               </td>
             </tr>
             <tr>
               <td className="text-center">
-                <button className="btn btn-lg btn-primary" onMouseDown={this.props.lt}>
+                <button className="btn btn-lg btn-primary" onClick={this.props.lt}>
                   <span className="glyphicon glyphicon-arrow-left"></span>
                 </button>
               </td>
               <td className="text-center">
-                <button className="btn btn-lg btn-primary" onMouseDown={this.props.br}>
+                <button className="btn btn-lg btn-primary" onClick={this.props.br}>
                   <span className="glyphicon glyphicon-stop"></span>
                 </button>
               </td>
               <td className="text-center">
-                <button className="btn btn-lg btn-primary" onMouseDown={this.props.rt}>
+                <button className="btn btn-lg btn-primary" onClick={this.props.rt}>
                   <span className="glyphicon glyphicon-arrow-right"></span>
                 </button>
               </td>
             </tr>
             <tr>
               <td colSpan="3" className="text-center">
-                <button className="btn btn-lg btn-primary" onMouseDown={this.props.rev}>
+                <button className="btn btn-lg btn-primary" onClick={this.props.rev}>
                   <span className="glyphicon glyphicon-arrow-down"></span>
                 </button>
               </td>
