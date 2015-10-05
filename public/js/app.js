@@ -704,16 +704,16 @@ var AddUsers = React.createClass({
       var userNames = [];
 
       _.each(userInputRefs, function (userInputRef) {
-        if (userInputRef.getDOMNode().value) {
-          var userName = userInputRef.getDOMNode().value.replace(/\W?/g, '');
-          userNames.push(userName);
+        var userInput = React.findDOMNode(userInputRef);
+        if (userInput.value) {
+          var userName = userInput.value.replace(/\W?/g, '');
+          if (userName !== '') {
+            userNames.push(userName);
+          }
         }
       });
-
-      if (userNames.length) {
-        //Send data to the backend
-        this.startGame(userNames);
-      }
+      //Send data to the backend
+      this.startGame(userNames);
     } else {
       this.stopGame();
     }

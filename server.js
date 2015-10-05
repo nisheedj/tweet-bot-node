@@ -88,7 +88,7 @@ var qMotor = function(item, next) {
     case 'dummy':
       setTimeout(function() {
         next();
-      }, 2000);
+      }, 100);
       break;
 
     default:
@@ -228,6 +228,24 @@ io.on('connection', function(socket) {
   });
 });
 
+var controlBotViaTweet = function(tweet) {
+  //Check if user has used valid hashtags and map it to controls
+  var controls = utils.validHashTags(tweet);
+  _.each(controls, function(control) {
+    /*Push control to job queue*/
+    twitterQ.push({
+      user: tweet.user,
+      control: control
+    });
+    /*Push dummy delay control*/
+    twitterQ.push({
+      user: tweet.user,
+      control: {
+        control: 'dummy'
+      }
+    });
+  });
+};
 
 var initializeTwitterStream = function() {
 
@@ -237,24 +255,14 @@ var initializeTwitterStream = function() {
     onTweet: function(tweet) {
       //Check if calibrate mode is on
       if (calibrateMode === false) {
-        //Only allow users added to the game to control the bot
-        if (_.contains(validUsers, tweet.user.screen_name)) {
-          //Check if user has used valid hashtags and map it to controls
-          var controls = utils.validHashTags(tweet);
-          _.each(controls, function(control) {
-            /*Push control to job queue*/
-            twitterQ.push({
-              user: tweet.user,
-              control: control
-            });
-            /*Push dummy delay control*/
-            twitterQ.push({
-              user: tweet.user,
-              control: {
-                control: 'dummy'
-              }
-            });
-          });
+        if(validUsers.length){
+          //Only allow users added to the game to control the bot
+          if (_.contains(validUsers, tweet.user.screen_name)) {
+            controlBotViaTweet(tweet);
+          }
+        } else {
+          //Open to all
+           controlBotViaTweet(tweet);
         }
       }
     }

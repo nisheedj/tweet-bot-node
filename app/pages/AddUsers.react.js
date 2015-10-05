@@ -13,7 +13,7 @@ var AddUsers = React.createClass({
       activeUsers: []
     };
   },
-  startGame:function(data){
+  startGame: function(data) {
     AppStore.io.emit('start game', data);
     this.setState({
       formDisabled: true
@@ -35,16 +35,16 @@ var AddUsers = React.createClass({
       var userNames = [];
 
       _.each(userInputRefs, function(userInputRef) {
-        if (userInputRef.getDOMNode().value) {
-          var userName = userInputRef.getDOMNode().value.replace(/\W?/g, '');
-          userNames.push(userName);
+        var userInput = React.findDOMNode(userInputRef);
+        if (userInput.value) {
+          var userName = userInput.value.replace(/\W?/g, '');
+          if (userName !== '') {
+            userNames.push(userName);
+          }
         }
       });
-
-      if (userNames.length) {
-        //Send data to the backend
-        this.startGame(userNames);
-      }
+      //Send data to the backend
+      this.startGame(userNames);
     } else {
       this.stopGame();
     }
@@ -70,7 +70,7 @@ var AddUsers = React.createClass({
   },
   render: function() {
     return (
-       <div className="col-sm-12 col-md-6 col-md-offset-3 margin-top">
+      <div className="col-sm-12 col-md-6 col-md-offset-3 margin-top">
           <h2>Add Users</h2>
           <hr/>
           <AddUserForm ref={'addUsersForm'} submitCb={this.addUsers} {...this.state}/>
